@@ -1,0 +1,8 @@
+Uniformed
+Non Uniformed
+Chemical Smoke
+Baton
+Riot Shield
+Gun
+Pepper Spray
+

@@ -1,0 +1,7 @@
+*.mp4
+*.csv
+*.json
+*.jpg
+SouthernFront.txt
+*.exe
+/survai_var/data/survai_data
