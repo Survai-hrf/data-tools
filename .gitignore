@@ -5,3 +5,7 @@
 SouthernFront.txt
 *.exe
 /survai_var/data/survai_data
+*jpeg
+*png
+*webp
+*.gif
