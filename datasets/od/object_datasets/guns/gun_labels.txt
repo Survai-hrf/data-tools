@@ -1,0 +1,4 @@
+pistol
+assault rifle
+shotgun
+machine gun
