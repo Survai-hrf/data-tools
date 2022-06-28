@@ -1,1 +1,0 @@
-This is the folder where we store all code for collecting and annotating data for our Object Detection and Video Action models.
