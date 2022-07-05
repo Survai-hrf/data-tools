@@ -10,3 +10,5 @@ SouthernFront.txt
 *webp
 *.gif
 *.zip
+
+.ipynb_checkpoints
