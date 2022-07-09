@@ -1,0 +1,8 @@
+br 
+cr 
+pg 
+ar 
+ru 
+ps 
+st 
+th 
