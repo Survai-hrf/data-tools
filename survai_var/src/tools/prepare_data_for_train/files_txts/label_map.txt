@@ -1,8 +1,8 @@
+ar
 br 
 cr 
-pg 
-ar 
+pg  
+ps
 ru 
-ps 
 st 
 th 
