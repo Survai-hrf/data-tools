@@ -1,6 +1,3 @@
-#HOW TO RUN: specifiying optional path: python args_example.py sadg/sdg/ --video_id sdg//sdg/sdg/
-            #without specifiying optional path: python args_example.py sadg/sdg/
-
 import argparse
 import os
 from pytube import YouTube
@@ -174,7 +171,6 @@ def download_videos(csv_path, train_val_split_path):
             train_file.write("%s\n" % f'{video}')
         
         return
-
 
 if __name__ == '__main__':
     args = parse_args()
