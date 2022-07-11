@@ -1,8 +1,8 @@
-ar
-br 
-cr 
-pg  
-ps
-ru 
-st 
-th 
+brawling
+crowd
+person_on_ground
+restraining
+running
+spray
+striking
+throwing

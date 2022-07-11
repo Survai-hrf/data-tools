@@ -10,8 +10,10 @@ df = pd.read_csv(csv_path)
 df = df.reset_index()  # make sure indexes pair with number of rows
 
 
-label_list = ['br', 'cr', 'st', 'pg', 'ru', 'ar', 'th', 'ps']
-class_dict = {'br': 0, 'cr': 1, 'pg': 2, 'ar': 3, 'ru': 4, 'ps': 5, 'st': 6}
+label_list = ['brawling', 'crowd', 'striking', 'person_on_ground', 
+                'running', 'restraining', 'throwing', 'spray']
+class_dict = {'brawling': 0, 'crowd': 1, 'person_on_ground': 2, 'restraining': 3, 
+                'running': 4, 'spray': 5, 'striking': 6, 'throwing': 7}
 
 
 # create array to store broken videos
@@ -34,9 +36,9 @@ def retry_download(tries, url, file_name, label):
             if i < tries:
                 broken_videos.add(file_name) # add broken videos to array to be deleted
                 continue  
-            
 
-# Iterates all videos in csv
+
+# Iterates all videos in csv and downloads them to 'master_videos'
 for index, row in df.iterrows():
 
     file_name = str(row['youtube_id'])
@@ -81,6 +83,8 @@ for video in broken_videos:
 
 # create dataframe of random val videos, amount for each class based off of 35% of the smallest class
 least_label_35 = int(df['label'].value_counts().min()*.35)
+print('lowest class: ', df['label'].value_counts().min())
+print('validation videos per class: ', least_label_35)
 df_val = df.groupby('label')['youtube_id', 'time_start', 'time_end'].apply(lambda s: s.sample(least_label_35))
 df_val = pd.DataFrame(df_val)
 df_val = df_val.reset_index()
