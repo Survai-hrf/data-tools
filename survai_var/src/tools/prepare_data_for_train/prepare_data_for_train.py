@@ -4,38 +4,39 @@ from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import pandas as pd
 from pytube.exceptions import VideoUnavailable
+import distutils.dir_util
 import shutil
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description='This script will download videos and train val split them from a given csv')
     parser.add_argument('csv_path', help='path to csv you want to download videos from')
-    parser.add_argument('--split_path', default='', help='path to place train val split folders')
-    parser.add_argument('--clarity', default=['nan', 'easy', 'medium'], help="a list of clarity levels you want downloaded. All options ex: ['nan', 'easy', 'medium', 'hard', 'bad_egg']")
+    parser.add_argument('--train_val_split_path', default='/', help='path to place train val split folders', )
 
     args = parser.parse_args()
     return args
 
+       
+def download_videos(csv_path, train_val_split_path):
 
-def download_videos(csv_path, split_path):
-
-    if os.path.exists(split_path):
-        shutil.rmtree(split_path)
+    if os.path.exists(train_val_split_path):
+        shutil.rmtree(train_val_split_path)
 
     df = pd.read_csv(csv_path)
     df = df.reset_index()  # make sure indexes pair with number of rows
 
-    label_list = ['brawling', 'crowd', 'striking', 'person_on_ground', 'running', 'restraining', 'throwing', 'spray']
-    class_dict = {'brawling': 0, 'crowd': 1, 'person_on_ground': 2, 
-                    'restraining': 3, 'running': 4, 'spray': 5, 'striking': 6, 'throwing': 7}
+
+    label_list = ['br', 'cr', 'st', 'pg', 
+                    'ru', 'ar', 'th', 'ps']
+    class_dict = {'br': 0, 'cr': 1, 'pg': 2, 'ar': 3, 
+                    'ru': 4, 'ps': 5, 'st': 6, 'th': 7}
+
 
     # create array to store broken videos
     broken_videos = set()
 
-    
+    # function that retries download after first fails, (tries) times
     def retry_download(tries, url, file_name, label):
-        """function that retries download after first fails, (tries) times"""
-
         for i in range(tries):
             try:
                 video = YouTube(url)
@@ -60,13 +61,13 @@ def download_videos(csv_path, split_path):
         start = int(row['time_start'])
         end = int(row['time_end'])
         label = str(row['label'])
-
+        bad_egg = row['bad_egg']
         url = f'https://www.youtube.com/watch?v={file_name[0:11]}'
         fill_start = str(start).zfill(6) # make times the same number of digits
         fill_end = str(end).zfill(6)
 
         # ignore bad labels and bad videos
-        if label not in label_list == True:
+        if label not in label_list or bad_egg == True:
             continue
 
         # makes sure videos that were previously downloaded don't get downloaded again
@@ -88,13 +89,13 @@ def download_videos(csv_path, split_path):
 
         except:
             print('retrying...', file_name)
-            retry_download(3, url, file_name, label)  
+            retry_download(1, url, file_name, label)  
 
 
     # drop broken videos from dataframe
     for video in broken_videos:
         df = df.drop(df.loc[df['youtube_id'] == video].index)
-    print(broken_videos)
+
 
     # create dataframe of random val videos, amount for each class based off of 35% of the smallest class
     least_label_35 = int(df['label'].value_counts().min()*.35)
@@ -104,13 +105,15 @@ def download_videos(csv_path, split_path):
     df_val = pd.DataFrame(df_val)
     df_val = df_val.reset_index()
 
+
     # remove df_val from df to get list of id's for df_train
     cond = df['youtube_id'].isin(df_val['youtube_id'])
     df.drop(df[cond].index, inplace = True)
 
+
     # move val videos to new directory
     val_list = []
-
+    
     for ind, row in df_val.iterrows():
         
         id = str(row['youtube_id'])
@@ -122,23 +125,26 @@ def download_videos(csv_path, split_path):
         class_num = class_dict.get(label)
         
         # ignore bad labels and bad videos
-        if label not in label_list == True:
+        if label not in label_list or bad_egg == True:
             continue   
         
-        # create directory to move val videos 
-        val_path = f'{split_path}/val/{label}'
-        if not os.path.exists(val_path): 
-            os.makedirs(val_path)
+        # create directory to move val videos
+        val_path = f'{train_val_split_path}/val/{label}'
 
+        if not os.path.exists(val_path):
+            os.makedirs(val_path)
+       
+            
         # move videos to val videos
         shutil.copyfile(f"master_videos/{label}/{id}_{fill_start}_{fill_end}.mp4", 
-                        f"{split_path}/val/{label}/{id}_{fill_start}_{fill_end}.mp4")   
+                        f"{train_val_split_path}/val/{label}/{id}_{fill_start}_{fill_end}.mp4")   
         val_list.append(f"{label}/{id}_{fill_start}_{fill_end}.mp4 {class_num}")
-        
 
 
     # move train videos to new directory
     train_list = []
+
+    
 
     for ind, row in df.iterrows():
         
@@ -151,23 +157,24 @@ def download_videos(csv_path, split_path):
         class_num = class_dict.get(label)
 
         # ignore bad labels and bad videos
-        if label not in label_list == True:
+        if label not in label_list or bad_egg == True:
             continue
-        
+            
         # create directory to for train videos
-        train_path = f'{split_path}/train/{label}'   
-        if not os.path.exists(train_path): 
+        train_path = f'{train_val_split_path}/train/{label}'
+
+        if not os.path.exists(train_path):
             os.makedirs(train_path)
+            
 
         # move videos to train videos
         shutil.copyfile(f"master_videos/{label}/{id}_{fill_start}_{fill_end}.mp4", 
-                        f"{split_path}/train/{label}/{id}_{fill_start}_{fill_end}.mp4")
+                        f"{train_val_split_path}/train/{label}/{id}_{fill_start}_{fill_end}.mp4")
         train_list.append(f"{label}/{id}_{fill_start}_{fill_end}.mp4 {class_num}")
 
-    
 
     # create val_list and train_list txt's  
-    with open('files_txts/val_list.txt', 'w') as val_file, open('files_txts/train_list.txt', 'w') as train_file:
+    with open(f'{args.train_val_split_path}/val_list.txt', 'w') as val_file, open(f'{args.train_val_split_path}/train_list.txt', 'w') as train_file:
         for video in val_list:
             val_file.write("%s\n" % f'{video}')
         for video in train_list:
@@ -177,4 +184,4 @@ def download_videos(csv_path, split_path):
 
 if __name__ == '__main__':
     args = parse_args()
-    download_videos(args.csv_path, args.split_path)
+    download_videos(args.csv_path, args.train_val_split_path)
