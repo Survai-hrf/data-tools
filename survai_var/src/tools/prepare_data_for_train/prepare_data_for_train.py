@@ -10,16 +10,17 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description='This script will download videos and train val split them from a given csv')
     parser.add_argument('csv_path', help='path to csv you want to download videos from')
-    parser.add_argument('--train_val_split_path', default='', help='path to place train val split folders', )
+    parser.add_argument('--split_path', default='', help='path to place train val split folders')
+    parser.add_argument('--clarity', default=['nan', 'easy', 'medium'], help="a list of clarity levels you want downloaded. All options ex: ['nan', 'easy', 'medium', 'hard', 'bad_egg']")
 
     args = parser.parse_args()
     return args
 
 
-def download_videos(csv_path, train_val_split_path):
+def download_videos(csv_path, split_path):
 
-    if os.path.exists(train_val_split_path):
-        shutil.rmtree(train_val_split_path)
+    if os.path.exists(split_path):
+        shutil.rmtree(split_path)
 
     df = pd.read_csv(csv_path)
     df = df.reset_index()  # make sure indexes pair with number of rows
@@ -31,8 +32,10 @@ def download_videos(csv_path, train_val_split_path):
     # create array to store broken videos
     broken_videos = set()
 
-    # function that retries download after first fails, (tries) times
+    
     def retry_download(tries, url, file_name, label):
+        """function that retries download after first fails, (tries) times"""
+
         for i in range(tries):
             try:
                 video = YouTube(url)
@@ -57,13 +60,13 @@ def download_videos(csv_path, train_val_split_path):
         start = int(row['time_start'])
         end = int(row['time_end'])
         label = str(row['label'])
-        bad_egg = row['bad_egg']
+
         url = f'https://www.youtube.com/watch?v={file_name[0:11]}'
         fill_start = str(start).zfill(6) # make times the same number of digits
         fill_end = str(end).zfill(6)
 
         # ignore bad labels and bad videos
-        if label not in label_list or bad_egg == True:
+        if label not in label_list == True:
             continue
 
         # makes sure videos that were previously downloaded don't get downloaded again
@@ -119,16 +122,17 @@ def download_videos(csv_path, train_val_split_path):
         class_num = class_dict.get(label)
         
         # ignore bad labels and bad videos
-        if label not in label_list or bad_egg == True: continue   
+        if label not in label_list == True:
+            continue   
         
         # create directory to move val videos 
-        val_path = f'{train_val_split_path}/val/{label}'
+        val_path = f'{split_path}/val/{label}'
         if not os.path.exists(val_path): 
             os.makedirs(val_path)
 
         # move videos to val videos
         shutil.copyfile(f"master_videos/{label}/{id}_{fill_start}_{fill_end}.mp4", 
-                        f"{train_val_split_path}/val/{label}/{id}_{fill_start}_{fill_end}.mp4")   
+                        f"{split_path}/val/{label}/{id}_{fill_start}_{fill_end}.mp4")   
         val_list.append(f"{label}/{id}_{fill_start}_{fill_end}.mp4 {class_num}")
         
 
@@ -147,17 +151,17 @@ def download_videos(csv_path, train_val_split_path):
         class_num = class_dict.get(label)
 
         # ignore bad labels and bad videos
-        if label not in label_list or bad_egg == True:
+        if label not in label_list == True:
             continue
         
         # create directory to for train videos
-        train_path = f'{train_val_split_path}/train/{label}'   
+        train_path = f'{split_path}/train/{label}'   
         if not os.path.exists(train_path): 
             os.makedirs(train_path)
 
         # move videos to train videos
         shutil.copyfile(f"master_videos/{label}/{id}_{fill_start}_{fill_end}.mp4", 
-                        f"{train_val_split_path}/train/{label}/{id}_{fill_start}_{fill_end}.mp4")
+                        f"{split_path}/train/{label}/{id}_{fill_start}_{fill_end}.mp4")
         train_list.append(f"{label}/{id}_{fill_start}_{fill_end}.mp4 {class_num}")
 
     
@@ -173,4 +177,4 @@ def download_videos(csv_path, train_val_split_path):
 
 if __name__ == '__main__':
     args = parse_args()
-    download_videos(args.csv_path, args.train_val_split_path)
+    download_videos(args.csv_path, args.split_path)
