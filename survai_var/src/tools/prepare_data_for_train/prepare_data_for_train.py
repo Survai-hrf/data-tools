@@ -11,7 +11,7 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description='This script will download videos and train val split them from a given csv')
     parser.add_argument('csv_path', help='path to csv you want to download videos from')
-    parser.add_argument('--split_path', default='/', help='path to place train val split folders', )
+    parser.add_argument('--split_path', default='/', help='path to place train val split folders')
     parser.add_argument('--clarity', default=['none', 'easy', 'medium'], help='takes a list of clarity levels to prepare. All options ex: ["none","easy","medium","hard","bad_egg"]')
 
     args = parser.parse_args()
