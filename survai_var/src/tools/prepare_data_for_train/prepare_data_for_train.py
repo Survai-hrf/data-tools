@@ -30,8 +30,9 @@ def download_videos(csv_path, train_val_split_path, clarity):
 
 
     #TODO:open label_map.txt, assign each row to a value in the list below
-    class_dict = {'br': 1, 'cr': 2, 'pg': 3, 'ar': 4, 
-                    'ru': 5, 'ps': 6, 'st': 7, 'th': 8}
+    with open('data/label_map.txt', 'a') as f:
+        lines = [s.replace('\n', '')for s in f.readlines()]
+    class_dict = dict((i,j) for j,i in enumerate(lines, start=1))
 
 
 
@@ -105,8 +106,8 @@ def download_videos(csv_path, train_val_split_path, clarity):
     
     #none is different than the rest, its an empty value
 
-    if 'bad_egg' not in clarity:
-        df = df[df['bad_egg'] == False]
+    # if 'bad_egg' not in clarity:
+    #     df = df[df['bad_egg'] == False]
 
 
     
