@@ -18,10 +18,10 @@ def parse_args():
     return args
 
        
-def download_videos(csv_path, train_val_split_path, clarity):
+def download_videos(csv_path, split_path, clarity):
 
-    if os.path.exists(train_val_split_path):
-        shutil.rmtree(train_val_split_path)
+    if os.path.exists(split_path):
+        shutil.rmtree(split_path)
 
     df = pd.read_csv(csv_path)
     df = df.reset_index()  # make sure indexes pair with number of rows
@@ -146,14 +146,14 @@ def download_videos(csv_path, train_val_split_path, clarity):
             continue   
         
         # create directory to move val videos
-        val_path = f'{train_val_split_path}/val/{label}'
+        val_path = f'{split_path}/val/{label}'
 
         if not os.path.exists(val_path):
             os.makedirs(val_path)
          
         # move videos to val videos
         shutil.copyfile(f"master_videos/{label}/{id}_{fill_start}_{fill_end}.mp4", 
-                        f"{train_val_split_path}/val/{label}/{id}_{fill_start}_{fill_end}.mp4")   
+                        f"{split_path}/val/{label}/{id}_{fill_start}_{fill_end}.mp4")   
         val_list.append(f"{label}/{id}_{fill_start}_{fill_end}.mp4 {class_num}")
 
     # move train videos to new directory
@@ -175,19 +175,19 @@ def download_videos(csv_path, train_val_split_path, clarity):
             continue
             
         # create directory to for train videos
-        train_path = f'{train_val_split_path}/train/{label}'
+        train_path = f'{split_path}/train/{label}'
 
         if not os.path.exists(train_path):
             os.makedirs(train_path)
             
         # move videos to train videos
         shutil.copyfile(f"master_videos/{label}/{id}_{fill_start}_{fill_end}.mp4", 
-                        f"{train_val_split_path}/train/{label}/{id}_{fill_start}_{fill_end}.mp4")
+                        f"{split_path}/train/{label}/{id}_{fill_start}_{fill_end}.mp4")
         train_list.append(f"{label}/{id}_{fill_start}_{fill_end}.mp4 {class_num}")
 
 
     # create val_list and train_list txt's  
-    with open(f'{args.train_val_split_path}/val_list.txt', 'w') as val_file, open(f'{args.train_val_split_path}/train_list.txt', 'w') as train_file:
+    with open(f'{args.split_path}/val_list.txt', 'w') as val_file, open(f'{args.split_path}/train_list.txt', 'w') as train_file:
         for video in val_list:
             val_file.write(f"{video}\n")
         for video in train_list:
@@ -196,4 +196,4 @@ def download_videos(csv_path, train_val_split_path, clarity):
 
 if __name__ == '__main__':
     args = parse_args()
-    download_videos(args.csv_path, args.train_val_split_path, args.clarity)
+    download_videos(args.csv_path, args.split_path, args.clarity)
