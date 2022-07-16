@@ -27,8 +27,6 @@ def download_videos(csv_path, split_path, clarity):
     df = df.reset_index()  # make sure indexes pair with number of rows
 
 
-
-
     #TODO:open label_map.txt, assign each row to a value in the list below
     class_dict = {'br': 1, 'cr': 2, 'pg': 3, 'ar': 4, 
                     'ru': 5, 'ps': 6, 'st': 7, 'th': 8}
