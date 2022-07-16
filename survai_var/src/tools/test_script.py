@@ -24,21 +24,13 @@ def download_videos(csv_path, train_val_split_path, clarity):
     df = pd.read_csv(csv_path)
     df = df.head(750)
     df = df.reset_index()  # make sure indexes pair with number of rows
-    df['clarity_level'] = df['clarity_level'].fillna('none')
+    df['clarity_level'] = df['clarity_level'].fillna('none') # filling NaN values with 'none'
 
     # open label_map.txt, assign each row to a value in the list below
-    # with open('data/label_map.txt', 'r') as f:
-    #     lines = f.readlines()
-    #     f.close()
-    # lines = [s.strip('\n')for s in lines]
-    # label_mp = dict((i,j) for j,i in enumerate(lines, start=1))
-
-    # TODO take label info from txt
-    label_mp = {'brawling': 1,'crowd': 2,'person_on_ground': 3,'restraining': 4,'running': 5,'spray': 6,'striking': 7,
-                'throwing': 8}
-
-
-
+    txt = open('label_map.txt', 'r')
+    lines = [s.strip('\n')for s in txt]
+    txt.close()
+    label_mp = dict((i,j) for j,i in enumerate(lines, start=1))
 
     # create array to store broken videos
     broken_videos = set()
@@ -94,7 +86,7 @@ def download_videos(csv_path, train_val_split_path, clarity):
 
         except:
             print('retrying...', file_name)
-            retry_download(3, url, file_name, label)  
+            retry_download(1, url, file_name, label)  
 
 
     # drop broken videos from dataframe
@@ -182,5 +174,3 @@ def download_videos(csv_path, train_val_split_path, clarity):
 if __name__ == '__main__':
     args = parse_args()
     download_videos(args.csv_path, args.train_val_split_path, args.clarity)
-    
-    
