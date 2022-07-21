@@ -22,7 +22,7 @@ def download_videos(csv_path, train_val_split_path, clarity):
         shutil.rmtree(train_val_split_path)
 
     df = pd.read_csv(csv_path)
-    df = df.head(750)
+    df = df.head(300)
     df = df.reset_index()  # make sure indexes pair with number of rows
     df['clarity_level'] = df['clarity_level'].fillna('none') # filling NaN values with 'none'
 
@@ -90,17 +90,18 @@ def download_videos(csv_path, train_val_split_path, clarity):
 
 
     # drop broken videos from dataframe
+    print(broken_videos)
     for video in broken_videos:
         df = df.drop(df.loc[df['youtube_id'] == video].index)
 
     # find matching clarity_level rows
-    df = df[df['clarity_level'].isin(clarity)]
+    df = df['clarity_level'].isin(clarity)
 
     # asseses if user input included 'bad_egg' or not and transforms df accordingly
     if 'bad_egg' not in clarity:
         df = df[df['bad_egg'] == False]
-    if 'bad_egg' in clarity:
-        df = df[df['bad_egg'] == True]
+    '''if 'bad_egg' in clarity:
+        df = df[df['bad_egg'] == True]'''
 
     # create dataframe of random val videos, amount for each class based off of 35% of the smallest class
     least_label_35 = int(df['label'].value_counts().min()*.35)

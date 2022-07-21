@@ -10,3 +10,5 @@ SouthernFront.txt
 *.gif
 *.zip
 .ipynb_checkpoints
+*.env
+supabase_connect.py
