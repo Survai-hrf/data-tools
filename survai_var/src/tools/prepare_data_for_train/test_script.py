@@ -86,8 +86,10 @@ def download_videos(csv_path, train_val_split_path, clarity):
 
         except:
             print('retrying...', file_name)
-            retry_download(1, url, file_name, label)  
+            retry_download(1, url, file_name, label) 
 
+
+    #FILTER WHAT IS GETTING TRAIN/TEST SPLIT
 
     # drop broken videos from dataframe
     print(broken_videos)
@@ -95,15 +97,16 @@ def download_videos(csv_path, train_val_split_path, clarity):
         df = df.drop(df.loc[df['youtube_id'] == video].index)
 
     # find matching clarity_level rows
-    df = df['clarity_level'].isin(clarity)
+    df = df[df['clarity_level'].isin(clarity)]
 
     # asseses if user input included 'bad_egg' or not and transforms df accordingly
     if 'bad_egg' not in clarity:
         df = df[df['bad_egg'] == False]
-    '''if 'bad_egg' in clarity:
-        df = df[df['bad_egg'] == True]'''
+    if 'bad_egg' in clarity:
+        df = df[df['bad_egg'] == True]
 
     # create dataframe of random val videos, amount for each class based off of 35% of the smallest class
+    # TODO Change from making 2 dataframes to adding split column and making val videos validation in split column
     least_label_35 = int(df['label'].value_counts().min()*.35)
     print('lowest class: ', df['label'].value_counts().min())
     print('validation videos per class: ', least_label_35)

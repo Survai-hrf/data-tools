@@ -1,0 +1,7 @@
+brawling/r4WFKmznKNQ6_000044_000054.mp4 1
+crowd/r4WFKmznKNQ1_000000_000007.mp4 2
+person_on_ground/r4WFKmznKNQ9_000067_000070.mp4 3
+restraining/ebolOvmrW906_000036_000040.mp4 4
+running/UBNRj1eRWLs16_000312_000315.mp4 5
+spray/g7HhFbkduVM9_000050_000053.mp4 6
+striking/1bglsyniUE45_000027_000029.mp4 7
