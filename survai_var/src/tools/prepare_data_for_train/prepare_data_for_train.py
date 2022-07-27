@@ -14,6 +14,7 @@ def parse_args():
     parser.add_argument('csv_path', help='path to csv you want to download videos from')
     parser.add_argument('--split_path', default='/', help='path to place train val split folders')
     parser.add_argument('--clarity_level', default=['none', 'easy', 'medium', 'hard', 'bad'], nargs="*", help='takes a list of clarity levels to prepare. All options ex: ["none","easy","medium","hard","bad_egg"]')
+    #parser.add_argument('--local', default=False)
     args = parser.parse_args()
     return args
 
