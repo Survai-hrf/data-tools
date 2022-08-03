@@ -5,9 +5,13 @@ from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import pandas as pd
 from pytube.exceptions import VideoUnavailable
-import distutils.dir_util
-import shutil
 
+'''
+The following command will upload videos to a gcloud storage bucket from the csv titled "var_data.csv" 
+and split the videos with clarity levels "none", "easy", "medium", and "hard"into a folder titled "split". 
+
+EXAMPLE COMMAND: python gcloud_upload.py var_data.csv --split_path split --clarity_level none easy medium hard
+'''
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -15,7 +19,6 @@ def parse_args():
     parser.add_argument('csv_path', help='path to csv you want to download videos from')
     parser.add_argument('--split_path', default='/', help='path to place train val split folders')
     parser.add_argument('--clarity_level', default=['none', 'easy', 'medium', 'hard', 'bad'], nargs="*", help='takes a list of clarity levels to prepare. All options ex: ["none","easy","medium","hard","bad_egg"]')
-    #parser.add_argument('--local', default=False)
     args = parser.parse_args()
     return args
 
@@ -148,7 +151,6 @@ def download_videos(csv_path, split_path, clarity_level):
             source_bucket.copy_blob(source_blob, source_bucket, 
                                     f"datasets/var/{split_path}/train/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
             train_list.append(f"{label}/{file_name}_{fill_start}_{fill_end}.mp4 {class_num}")
-
 
 
     # create val_list and train_list txt's  
