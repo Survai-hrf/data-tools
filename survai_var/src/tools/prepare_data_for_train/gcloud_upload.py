@@ -99,6 +99,7 @@ def download_videos(csv_path, split_path, clarity_level):
                     file_name = file_name[1:]
 
                 subclip(file_name, start, end, fill_start, fill_end)
+                
                 if has_dash == True:
                     os.rename(f'{file_name}_{fill_start}_{fill_end}.mp4', 
                                 f'-{file_name}_{fill_start}_{fill_end}.mp4')
