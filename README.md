@@ -30,13 +30,13 @@ To open a dataset in fiftyone, you need to provide a path to the folder containi
 Convert json format from our standard coco format, to "supervisely" json format. Supervisely is a machine learning platfrom that provides supplemental annotations for our object detection dataset through a company called "Quantigo". For them to perform this service on our existing data, coco jsons must be converted to their proprietary "supervisely" format. 
 
 The script will take the path to a coco json and convert it to the following format:
-
+```
 | - dataset
 |   | - annotations
 |   |   | - images
 |   |   | - annotations
 |   | - meta.json
-
+```
 
 ### delete_images.ipynb
 
