@@ -33,7 +33,7 @@ def download_videos(csv_path, split_path, clarity_level):
     txt = open('label_map.txt', 'r')
     lines = [s.strip('\n')for s in txt]
     txt.close()
-    label_map = dict((index, label) for label, index in enumerate(lines, start=1))
+    label_map = dict((index, label) for label, index in enumerate(lines, start=0))
     broken_videos = []
 
 
