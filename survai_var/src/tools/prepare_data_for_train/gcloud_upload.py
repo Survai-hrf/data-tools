@@ -19,7 +19,7 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description='This script will download videos and train val split them from a given csv')
     parser.add_argument('csv_path', help='path to csv you want to download videos from')
-    parser.add_argument('--split-path', default='', help='path to place train val split folders')
+    parser.add_argument('--split-path', default='split', help='path to place train val split folders')
     parser.add_argument('--clarity-level', default=['none', 'easy', 'medium', 'hard', 'bad'], nargs="*", help='takes a list of clarity levels to prepare. All options ex: ["none","easy","medium","hard","bad_egg"]')
     args = parser.parse_args()
     return args
@@ -114,7 +114,7 @@ def download_videos(csv_path, split_path, clarity_level):
         
         # check if file already exists in gcloud storage bucket
         if f"datasets/var/master_videos/{label}/{file_name}_{fill_start}_{fill_end}.mp4" in video_list:
-            print('file already exists', file_name)
+            print(index, 'file already exists', file_name)
             continue
         
         attempts = 0
@@ -138,11 +138,11 @@ def download_videos(csv_path, split_path, clarity_level):
                 break
             
             except:
-                print('retrying...', index, file_name)
+                print(index, 'retrying...', file_name)
                 attempts += 1
                 continue
         else:  
-            print('BROKEN VIDEO: ', index, file_name)
+            print(index, 'BROKEN VIDEO: ', file_name)
             broken_videos.append(file_name) # add broken videos to array to be deleted
             continue
 
@@ -192,12 +192,6 @@ def download_videos(csv_path, split_path, clarity_level):
         class_num = label_map.get(label)
         split = row['split']
 
-
-        val_path = f'{split_path}/val/{label}'
-        train_path = f'{split_path}/train/{label}'
-
-        if not os.path.exists(val_path): os.makedirs(val_path)
-        if not os.path.exists(train_path): os.makedirs(train_path)
 
         source_bucket = storage_client.bucket(bucket_name)
         source_blob = source_bucket.blob(f"datasets/var/master_videos/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
