@@ -1,0 +1,7 @@
+uniformed
+non_uniformed
+riot_shield
+gun
+pepper_spray
+baton
+chemical_smoke
