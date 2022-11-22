@@ -1,0 +1,2 @@
+label_name,bbox_x,bbox_y,bbox_width,bbox_height,image_name,image_width,image_height
+car,28,2,220,127,red.jpeg,250,137

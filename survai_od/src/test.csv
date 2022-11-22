@@ -1,0 +1,10 @@
+label_name,bbox_x,bbox_y,bbox_width,bbox_height,image_name,image_width,image_height
+car,521,1077,2056,788,2021_VW_ID.jpg,3000,2000
+car,95,376,1044,483,red_vw.jpeg,1600,900
+car,1515,934,1530,1246,white_van.jpg,4614,2595
+car,169,463,707,269,blue_car.jpg,1200,800
+car,115,154,457,237,orange.jpg,700,525
+car,511,214,962,602,sport.jpg,1920,1080
+red_car,153,81,49,35,motorway.jpg,330,217
+black_car,224,143,75,53,motorway.jpg,330,217
+white_car,277,94,53,34,motorway.jpg,330,217

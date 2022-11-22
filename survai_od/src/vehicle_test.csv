@@ -1,0 +1,4 @@
+label_name,bbox_x,bbox_y,bbox_width,bbox_height,image_name,image_width,image_height
+vehicle,2,85,216,168,black_sedan.jpg,225,300
+vehicle,7,37,275,157,brown_truck.jpg,300,225
+vehicle,20,57,264,153,red_van.jpg,300,225
