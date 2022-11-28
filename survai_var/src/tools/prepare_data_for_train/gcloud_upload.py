@@ -5,6 +5,7 @@ from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import pandas as pd
 from pytube.exceptions import VideoUnavailable
+from datetime import datetime
 
 
 def parse_args():
@@ -25,7 +26,7 @@ def download_videos(csv_path, split_path, clarity_level):
 
     # delete old split
     blobs = storage_client.list_blobs(bucket_name, prefix='datasets/var/split/')
-    for blob in blobs: blob.delete()
+    #for blob in blobs: blob.delete()
 
     # read csv, clean data
     df = pd.read_csv(csv_path)
@@ -44,6 +45,8 @@ def download_videos(csv_path, split_path, clarity_level):
     video_list = [video.name for video in videos]
 
     has_dash = False
+
+    now = datetime.now()
 
     # function to download videos
     def download(url, file_name): 
@@ -159,13 +162,11 @@ def download_videos(csv_path, split_path, clarity_level):
         source_blob = source_bucket.blob(f"datasets/var/master_videos/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
 
         if split == 'val':
-            source_bucket.copy_blob(source_blob, source_bucket, 
-                                    f"datasets/var/{split_path}/val/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
+            #source_bucket.copy_blob(source_blob, source_bucket, f"datasets/var/{split_path}/val/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
             val_list.append(f"{label}/{file_name}_{fill_start}_{fill_end}.mp4 {class_num}")
             
         if split == 'train':
-            source_bucket.copy_blob(source_blob, source_bucket, 
-                                    f"datasets/var/{split_path}/train/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
+            #source_bucket.copy_blob(source_blob, source_bucket, f"datasets/var/{split_path}/train/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
             train_list.append(f"{label}/{file_name}_{fill_start}_{fill_end}.mp4 {class_num}")
 
 
@@ -176,8 +177,8 @@ def download_videos(csv_path, split_path, clarity_level):
         for file_name in train_list:
             train_file.write(f"{file_name}\n")
 
-    upload_to_bucket('datasets/var/split/val_list.txt', 'val_list.txt', bucket_name)
-    upload_to_bucket('datasets/var/split/train_list.txt', 'train_list.txt', bucket_name)
+    upload_to_bucket(f'datasets/var/{now.strftime("%d-%m-%Y")}_split/val_list.txt', 'val_list.txt', bucket_name)
+    upload_to_bucket(f'datasets/var/{now.strftime("%d-%m-%Y")}_split/train_list.txt', 'train_list.txt', bucket_name)
     os.remove('val_list.txt')
     os.remove('train_list.txt')  
 
