@@ -136,3 +136,7 @@ The script requires the following terminal inputs:
 - path to csv containing ALL var_data (usually generated directly from Supabase)
 - path to save the split dataset (default is prepare_data_for_train)
 - specification of the clarity levels to include in the split dataset (default is all possible clarity levels)
+
+
+----------------------------------------------------------------------------------------------------
+For more information on collecting training data and putting it into the Glimpse system refer to page 5 here: https://docs.google.com/document/d/1suZmiOkJ7AjUf3kXyYZgi1mBKoY6DloNnoSKQ_LIumg/edit?usp=sharing
