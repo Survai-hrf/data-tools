@@ -1,0 +1,9 @@
+brawling
+crowd
+person_on_ground
+restraining
+running
+spray
+striking
+throwing
+nothing

@@ -1,5 +1,6 @@
 import argparse
 import os
+import subprocess
 from pytube import YouTube
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import pandas as pd
@@ -10,7 +11,7 @@ import shutil
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='This script will download videos and train val split them from a given csv')
+        description='This script will download videos and train val split them from var_data.csv or similar data, and save them to your local directory.')
     parser.add_argument('csv_path', help='path to csv you want to download videos from')
     parser.add_argument('--split_path', default='/', help='path to place train val split folders')
     parser.add_argument('--clarity_level', default=['none', 'easy', 'medium', 'hard', 'bad'], nargs="*", help='takes a list of clarity levels to prepare. All options ex: ["none","easy","medium","hard","bad_egg"]')
@@ -39,12 +40,26 @@ def download_videos(csv_path, split_path, clarity_level):
 
     # define function for both initial and retry of download
     def download(url, file_name, label, start, end, fill_start, fill_end):
-        video = YouTube(url)
+        video = YouTube(url, use_oauth=True, allow_oauth_cache=True)
         yt_video = video.streams.get_highest_resolution()
         yt_video.download(output_path=f'master_videos/{label}/', filename=f"{file_name}.mp4")
         # download videos into correct folder
-        ffmpeg_extract_subclip(filename=f'master_videos/{label}/{file_name}.mp4', t1=start, t2=end, 
-                                targetname=f'master_videos/{label}/{file_name}_{fill_start}_{fill_end}.mp4') 
+        command = [
+            'ffmpeg', '-i',
+            f'master_videos/{label}/{file_name}.mp4', '-ss',
+            str(start), '-t',
+            str(end - start), '-c:v', 'libx264', '-c:a', 'copy',
+            '-threads', '1', '-loglevel', 'panic',
+            f'master_videos/{label}/{file_name}_{fill_start}_{fill_end}.mp4'
+        ]
+        command = ' '.join(command)
+
+        try:
+            subprocess.check_output(
+                command, shell=True, stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            return err.output
+  
         os.remove(f'master_videos/{label}/{file_name}.mp4') 
 
 
@@ -70,7 +85,7 @@ def download_videos(csv_path, split_path, clarity_level):
             continue
 
         attempts = 0
-        while attempts < 3: 
+        while attempts < 2: 
             try: 
                 download(url, file_name, label, start, end, fill_start, fill_end)
                 break

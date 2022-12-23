@@ -185,17 +185,15 @@ def download_videos(csv_path, split_path, clarity_level):
         split = row['split']
 
 
-        source_bucket = storage_client.bucket(bucket_name)
-        source_blob = source_bucket.blob(f"datasets/var/master_videos/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
+        #source_bucket = storage_client.bucket(bucket_name)
+        #source_blob = source_bucket.blob(f"datasets/var/master_videos/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
 
         if split == 'val':
-            source_bucket.copy_blob(source_blob, source_bucket, 
-                                    f"datasets/var/{split_path}/val/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
+            #source_bucket.copy_blob(source_blob, source_bucket, f"datasets/var/{split_path}/val/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
             val_list.append(f"{label}/{file_name}_{fill_start}_{fill_end}.mp4 {class_num}")
             
         if split == 'train':
-            source_bucket.copy_blob(source_blob, source_bucket, 
-                                    f"datasets/var/{split_path}/train/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
+            #source_bucket.copy_blob(source_blob, source_bucket, f"datasets/var/{split_path}/train/{label}/{file_name}_{fill_start}_{fill_end}.mp4")
             train_list.append(f"{label}/{file_name}_{fill_start}_{fill_end}.mp4 {class_num}")
 
 
