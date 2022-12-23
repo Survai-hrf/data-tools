@@ -2,7 +2,7 @@
 
 Data tools is a repository containing tools designed to aid in the data collection process as well as prepare the data to be used for training by Survai's machine learning models. The tools are split by Object Detection (survai_od), and Video Action Recognition (survai_var). 
 
-## Object Detection Code Descriptions
+## Object Detection
 
 ### edit_jsons
 
